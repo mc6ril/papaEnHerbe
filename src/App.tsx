@@ -1,10 +1,11 @@
-import React from 'react';
-import {SafeAreaView, StatusBar} from 'react-native';
-import {ThemeProvider, useTheme} from './design-system/theme/ThemeProvider';
-import {HomePage} from '@presentation/features/home/screens/HomePage';
+import React from "react";
+import { SafeAreaView, StatusBar } from "react-native";
+import { HomePage } from "@presentation/features/home/screens/HomePage";
+import { ThemeProvider, useTheme } from "@design-system/theme";
+import { AppNavigation } from "@presentation/navigation/NavigationContainer";
 
 const AppContent = () => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   return (
     <SafeAreaView
       style={{
@@ -12,11 +13,11 @@ const AppContent = () => {
         backgroundColor: theme.colors.background.primary,
       }}>
       <StatusBar
-        barStyle={theme.mode === 'dark' ? 'light-content' : 'dark-content'}
+        barStyle={theme.mode === "dark" ? "light-content" : "dark-content"}
         backgroundColor="transparent"
         translucent={true}
       />
-      <HomePage />
+      <AppNavigation />
     </SafeAreaView>
   );
 };

@@ -2,6 +2,12 @@
 
 ## Architecture
 
+### Important: Pas d'Expo
+
+Cette application utilise React Native sans Expo. Par conséquent :
+
+- Ne pas utiliser de packages commençant par `@expo/`
+
 ### Design System
 
 Le design system est organisé en plusieurs parties :
@@ -37,7 +43,7 @@ Le `ThemeProvider` est un composant de contexte qui enveloppe l'application et f
 
 ```typescript
 // App.tsx
-import {ThemeProvider} from './design-system/ThemeProvider';
+import { ThemeProvider } from "./design-system/ThemeProvider";
 
 export default function App() {
   return <ThemeProvider>{/* Le reste de l'application */}</ThemeProvider>;
@@ -56,14 +62,12 @@ Le `ThemeProvider` :
 Le hook `useTheme` permet d'accéder au thème dans n'importe quel composant :
 
 ```typescript
-import {useTheme} from './design-system/hooks/useTheme';
+import { useTheme } from "./design-system/hooks/useTheme";
 
 function MyComponent() {
-  const {colors, theme, isDark, isLight} = useTheme();
+  const { colors, theme, isDark, isLight } = useTheme();
 
-  return (
-    <View style={{backgroundColor: colors.primary[500]}}>{/* ... */}</View>
-  );
+  return <View style={{ backgroundColor: colors.primary[500] }}>{/* ... */}</View>;
 }
 ```
 
@@ -133,26 +137,22 @@ src/components/ComponentName/
 
 ```typescript
 // Button.tsx
-import React from 'react';
-import {TouchableOpacity, Text, StyleSheet} from 'react-native';
-import {useTheme} from '../../design-system/hooks/useTheme';
+import React from "react";
+import { TouchableOpacity, Text, StyleSheet } from "react-native";
+import { useTheme } from "../../design-system/hooks/useTheme";
 
 interface ButtonProps {
   onPress: () => void;
   children: string;
-  variant?: 'primary' | 'secondary';
+  variant?: "primary" | "secondary";
 }
 
-export const Button = ({
-  onPress,
-  children,
-  variant = 'primary',
-}: ButtonProps) => {
-  const {colors} = useTheme();
+export const Button = ({ onPress, children, variant = "primary" }: ButtonProps) => {
+  const { colors } = useTheme();
 
   return (
     <TouchableOpacity
-      style={[styles.button, {backgroundColor: colors[variant][500]}]}
+      style={[styles.button, { backgroundColor: colors[variant][500] }]}
       onPress={onPress}>
       <Text style={styles.text}>{children}</Text>
     </TouchableOpacity>
@@ -164,15 +164,15 @@ export const Button = ({
 
 ```typescript
 // Button.test.tsx
-import React from 'react';
-import {render, fireEvent} from '@testing-library/react-native';
-import {Button} from './Button';
+import React from "react";
+import { render, fireEvent } from "@testing-library/react-native";
+import { Button } from "./Button";
 
-describe('Button', () => {
-  it('should call onPress when pressed', () => {
+describe("Button", () => {
+  it("should call onPress when pressed", () => {
     const onPress = jest.fn();
-    const {getByText} = render(<Button onPress={onPress}>Click me</Button>);
-    fireEvent.press(getByText('Click me'));
+    const { getByText } = render(<Button onPress={onPress}>Click me</Button>);
+    fireEvent.press(getByText("Click me"));
     expect(onPress).toHaveBeenCalled();
   });
 });
@@ -182,14 +182,16 @@ describe('Button', () => {
 
 ```typescript
 // Button.stories.tsx
-import React from 'react';
-import {storiesOf} from '@storybook/react-native';
-import {Button} from './Button';
+import React from "react";
+import { storiesOf } from "@storybook/react-native";
+import { Button } from "./Button";
 
-storiesOf('Button', module)
-  .add('Primary', () => <Button onPress={() => {}}>Primary Button</Button>)
-  .add('Secondary', () => (
-    <Button onPress={() => {}} variant="secondary">
+storiesOf("Button", module)
+  .add("Primary", () => <Button onPress={() => {}}>Primary Button</Button>)
+  .add("Secondary", () => (
+    <Button
+      onPress={() => {}}
+      variant="secondary">
       Secondary Button
     </Button>
   ));
@@ -247,5 +249,5 @@ export const colors = {
 L'utilisation se fait via le hook `useTheme` :
 
 ```typescript
-const {colors, theme, isDark, isLight} = useTheme();
+const { colors, theme, isDark, isLight } = useTheme();
 ```
