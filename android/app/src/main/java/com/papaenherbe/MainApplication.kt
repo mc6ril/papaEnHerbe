@@ -1,4 +1,4 @@
-package com.bientotpapa
+package com.papaenherbe
 
 import android.app.Application
 import com.facebook.react.PackageList

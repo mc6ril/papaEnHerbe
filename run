@@ -1,0 +1,138 @@
+if [ $# -eq 0 ]
+then
+  echo "========================================================================"
+  echo "No arguments found, the argument should be:"
+  echo "install\t\t\t install node_modules and copy all override code and link all modules"
+  echo "android\t\t\t run app on Android with debug mode"
+  echo "release-android\t\t run app on Android with release mode"
+  echo "pod-install\t\t jump to ios directory and install pod"
+  echo "copy-customs\t\t copy custom_modules to node_modules"
+  echo "reset-cache\t\t reset cache"
+  echo "test\t\t\t Run unit test"
+  echo "========================================================================"
+elif [[ $1 == "help" || $1 == "h" ]]
+then
+  echo "========================================================================"
+  echo "install\t\t\t install node_modules and copy all override code and link all modules"
+  echo "android\t\t\t run app on Android with debug mode"
+  echo "release-android\t\t run app on Android with release mode"
+  echo "pod-install\t\t jump to ios directory and install pod"
+  echo "copy-customs\t\t copy custom_modules to node_modules"
+  echo "reset-cache\t\t reset cache"
+  echo "test\t\t\t Run unit test"
+  echo "========================================================================"
+elif [ $1 == "install" ]
+then
+  echo "Delete existed node_modules..."
+  rm -rf node_modules
+
+  echo "Install new node_modules..."
+  yarn install
+
+  echo "Copy custom modules to node_modules..."
+  cp -a custom_modules/modules/. node_modules/
+  npx patch-package
+
+elif [ $1 == "android" ]
+then
+  echo "Copy custom modules to node_modules..."
+  cp -a custom_modules/modules/. node_modules/
+  echo "Installing on android..."
+  npm run android
+elif [ $1 == "release-android" ]
+then
+  echo "Copy custom modules to node_modules..."
+  cp -a custom_modules/modules/. node_modules/
+  npx patch-package
+  npm run release-android
+elif [ $1 == "android-bundle" ]
+then
+  echo "Delete existed node_modules..."
+  rm -rf node_modules
+
+  echo "Install new node_modules..."
+  yarn install
+
+  echo "Copy custom modules to node_modules..."
+  cp -a custom_modules/modules/. node_modules/
+  npx patch-package
+
+  cd android
+  echo "Cleaning....."
+  ./gradlew clean
+  echo "Start building bundle....."
+  ./gradlew app:bundleRelease 
+  cd ..
+elif [ $1 == "clean" ]
+then
+  cd android
+  ./gradlew clean
+  cd ..
+elif [ $1 == "pod-install" ]
+then
+  echo "Copy custom modules to node_modules..."
+  cp -a custom_modules/modules/. node_modules/
+  npx patch-package
+
+  cd ios
+  rm -rf Pods
+  pod install
+  cd ..
+elif [ $1 == "copy-customs" ]
+then
+  echo "Copy custom modules to node_modules..."
+  cp -a custom_modules/modules/. node_modules/
+  npx patch-package
+
+elif [ $1 == "pod-update" ]
+then
+  echo "Copy custom modules to node_modules..."
+  cp -a custom_modules/modules/. node_modules/
+  npx patch-package
+
+  cd ios
+  pod update
+  cd ..
+elif [ $1 == "reset-cache" ]
+then
+  # reset cache
+  watchman watch-del-all && react-native start -- --reset-cache
+elif [ $1 == "test" ]
+then
+  # run unit test
+  yarn test --runInBand --no-cache --detectOpenHandles --forceExit
+elif [ $1 == "check-type" ]
+then
+  echo "Checking type...."
+  cd src
+  eslint . --ext .jsx,.ts,.tsx
+  cd ..
+elif [ $1 == "compile" ]
+then
+  echo "Compiling..."
+  cd src
+  npx tsc
+  cd ..
+elif [ $1 == "check-sbom" ]
+then
+  curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b .
+  curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b .
+  rm -rf sbom && mkdir sbom
+  ./syft dir:. --source-name PerifitPump --exclude ./custom_modules --exclude ./grype --exclude ./sbom --exclude ./android/build --exclude ./android/app/build -o spdx > sbom/PerifitPump.spdx
+  ./grype sbom/PerifitPump.spdx | tee grype-output.log
+  if grep -q "Critical" grype-output.log; then
+    echo "Critical vulnerability found";
+     exit 1;
+  fi
+elif [ $1 == "sonar-scanner" ]
+then
+  yarn sonar-scanner
+elif [ $1 == "reset-lfs" ]
+then
+  git lfs uninstall
+  git reset --hard
+  git lfs install
+  git lfs update --force
+else
+  echo "Wrong arguments"
+fi
