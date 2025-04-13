@@ -1,8 +1,9 @@
 import { DesignButton } from "@design-system/components/common/Button";
 import { useTheme } from "@design-system/theme";
 import React, { useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Platform, StatusBar } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Platform, StatusBar } from "react-native";
 import { calculateWeek } from "@presentation/utils/pregnancy/calculations";
+import { styles } from "./styles";
 
 export const HomePage = () => {
   const { theme, toggleTheme } = useTheme();
@@ -112,57 +113,3 @@ export const HomePage = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
-  themeButton: {
-    padding: 8,
-  },
-  content: {
-    flex: 1,
-  },
-  section: {
-    padding: 16,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 12,
-  },
-  dateContainer: {
-    alignItems: "center",
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: "rgba(0,0,0,0.05)",
-  },
-  dateText: {
-    fontSize: 16,
-    marginBottom: 12,
-  },
-  card: {
-    padding: 16,
-    borderRadius: 8,
-    backgroundColor: "rgba(0,0,0,0.05)",
-  },
-  cardText: {
-    fontSize: 16,
-    lineHeight: 24,
-  },
-  actionsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    marginTop: 8,
-  },
-});
